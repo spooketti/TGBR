@@ -1,5 +1,5 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application,MessageHandler,CallbackQueryHandler,ConversationHandler,ContextTypes,filters
+from telegram.ext import Application,CommandHandler,MessageHandler,CallbackQueryHandler,ConversationHandler,ContextTypes,filters
 import re
 from datetime import datetime, timedelta
 import asyncio
@@ -11,7 +11,7 @@ import threading
 web = Flask(__name__)
 
 def runFlask():
-   web.run(debug=True,port=8000,host="0.0.0.0")
+   web.run(debug=False,port=8000,host="0.0.0.0")
 
 flaskThread = threading.Thread(
         target=runFlask,
@@ -33,6 +33,9 @@ CONSEQUENCE3 = os.getenv("CONSEQUENCE3")
 isTicketActive = False
 endTime = 0
 reason = ""
+
+async def ping(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text("pong")
 
 async def createForm(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["form"] = {}
@@ -188,6 +191,7 @@ def main():
     )
 
     app.add_handler(formConversation)
+    app.add_handler(CommandHandler("ping", ping))
     app.add_handler(CallbackQueryHandler(buttonHandler))
     print("Logged in")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
