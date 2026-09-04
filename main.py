@@ -5,7 +5,13 @@ from datetime import datetime, timedelta
 import asyncio
 from dotenv import load_dotenv
 import os
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from flask import Flask
+
+web = Flask(__name__)
+
+@web.route('/', methods=['GET', 'POST'])
+def home():
+    return "<html><body></body></html>"
 
 load_dotenv()
 TARGETID = os.getenv("TARGETID")
@@ -175,17 +181,7 @@ def main():
     app.add_handler(CallbackQueryHandler(buttonHandler))
     print("Logged in")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
-    server_address = ('', 8000)
-    httpd = HTTPServer(server_address, httphandler)
-    print("http goin up")
-    httpd.serve_forever()
-
-class httphandler(BaseHTTPRequestHandler):
-    def post(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(b".")
+    web.run(debug=True,port=8000)
 
 if __name__ == "__main__":
     main()
