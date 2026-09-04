@@ -6,8 +6,17 @@ import asyncio
 from dotenv import load_dotenv
 import os
 from flask import Flask
+import threading
 
 web = Flask(__name__)
+
+def runFlask():
+   web.run(debug=True,port=8000,host="0.0.0.0")
+
+flaskThread = threading.Thread(
+        target=runFlask,
+        daemon=True
+)
 
 @web.route('/', methods=['GET', 'POST'])
 def home():
@@ -151,6 +160,7 @@ async def timerTask(application, chatID, duration):
 
 
 def main():
+    flaskThread.start()
     app = (Application.builder().token(TOKEN).build())
 
     formConversation = ConversationHandler(
@@ -181,7 +191,6 @@ def main():
     app.add_handler(CallbackQueryHandler(buttonHandler))
     print("Logged in")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
-    web.run(debug=True,port=8000)
 
 if __name__ == "__main__":
     main()
