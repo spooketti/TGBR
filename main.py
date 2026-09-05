@@ -137,7 +137,7 @@ async def checkMessage(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.id != TARGETID:
         return ConversationHandler.END
 
-    if not (re.search(r"\b(bit|mo|moment)\b", update.message.text.lower())):
+    if not (re.search(r"\b(bit|mo|moment|second)\b", update.message.text.lower())):
         return
 
     if isTicketActive:
